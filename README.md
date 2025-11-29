@@ -7,8 +7,10 @@ We are working with the Credit Card Fraud Prediction dataset (~555k transactions
 
     conda activate creditfraud
 
+    pip install -r requirements.txt
 
-#### if using pip
+
+#### if using usual way
     python -m venv venv
 
 ##### mac:
@@ -22,7 +24,7 @@ We are working with the Credit Card Fraud Prediction dataset (~555k transactions
 
 ## File Structure
 ```bash
-├── .gitignore   #files not to add to push to github
+├── .gitignore   #files not to add to github
 ├── Dockerfile
 ├── README.md   # documentation file    
 ├── config      
