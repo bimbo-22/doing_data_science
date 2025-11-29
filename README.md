@@ -1,15 +1,19 @@
 # Doing Data Science Project
 We are working with the Credit Card Fraud Prediction dataset (~555k transactions, 22+ attributes). The target variable is is_fraud (0/1), which we treat as ground truth for supervised classification. Our overall goal is to predict fraudulent transactions and understand which factors increase fraud risk.
 
+### To install required libraries:
 ### if using conda:
     conda create creditfraud
+
     conda activate creditfraud
 
-### To install required libraries:
+
 #### if using pip
     python -m venv venv
+
     -mac:
         source venv/bin/activate
+
     -windows:
         python venv/bin/activate
     pip install -r requirements.txt
@@ -29,7 +33,6 @@ We are working with the Credit Card Fraud Prediction dataset (~555k transactions
     │   ├── data_ingestion.py
     │   ├── data_transformation.py
     │   ├── data_validation.py
-    │   ├── feature_extractor.py
     │   ├── model_evaluation.py
     │   └── model_trainer.py
     ├── config
