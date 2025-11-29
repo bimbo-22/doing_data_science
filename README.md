@@ -1,6 +1,44 @@
 # Doing Data Science Project
 We are working with the Credit Card Fraud Prediction dataset (~555k transactions, 22+ attributes). The target variable is is_fraud (0/1), which we treat as ground truth for supervised classification. Our overall goal is to predict fraudulent transactions and understand which factors increase fraud risk.
 
+## File Structure
+├── .gitignore
+├── Dockerfile
+├── README.md
+├── config
+    └── config.yaml
+├── creditfaultprediction
+    ├── __init__.py
+    ├── components
+    │   ├── __init__.py
+    │   ├── data_ingestion.py
+    │   ├── data_transformation.py
+    │   ├── data_validation.py
+    │   ├── feature_extractor.py
+    │   ├── model_evaluation.py
+    │   └── model_trainer.py
+    ├── config
+    │   ├── __init__.py
+    │   └── configuration.py
+    ├── constants
+    │   ├── __init__.py
+    │   └── training_pipeline.py
+    │   │   └── __init__.py
+    ├── entity
+    │   ├── __init___.py
+    │   └── config_entity.py
+    ├── pipeline
+    │   └── __init__.py
+    └── utils
+    │   ├── __init__.py
+    │   └── common.py
+├── data_understanding.ipynb
+├── main.py
+├── requirements.txt
+├── research
+    └── research.ipynb
+├── setup.py
+└── template.py
 
 ## Data Understanding
 
