@@ -1,6 +1,10 @@
 # Doing Data Science Project
 We are working with the Credit Card Fraud Prediction dataset (~555k transactions, 22+ attributes). The target variable is is_fraud (0/1), which we treat as ground truth for supervised classification. Our overall goal is to predict fraudulent transactions and understand which factors increase fraud risk.
 
+
+## Data Understanding
+
+
 ## At the moment
 So far, we have:
  - Explored the dataset structure (no missing values, no duplicates, basic distributions of amount, categories, locations, etc.) to understand what information is available.
