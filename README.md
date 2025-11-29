@@ -2,6 +2,7 @@
 We are working with the Credit Card Fraud Prediction dataset (~555k transactions, 22+ attributes). The target variable is is_fraud (0/1), which we treat as ground truth for supervised classification. Our overall goal is to predict fraudulent transactions and understand which factors increase fraud risk.
 
 ## File Structure
+```bash
 ├── .gitignore
 ├── Dockerfile
 ├── README.md
@@ -39,6 +40,8 @@ We are working with the Credit Card Fraud Prediction dataset (~555k transactions
     └── research.ipynb
 ├── setup.py
 └── template.py
+
+``` 
 
 ## Data Understanding
 
