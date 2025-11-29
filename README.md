@@ -12,10 +12,10 @@ We are working with the Credit Card Fraud Prediction dataset (~555k transactions
     python -m venv venv
 
 ##### mac:
-        source venv/bin/activate
+    source venv/bin/activate
 
  ##### windows:
-        python venv/scripts/activate
+    python venv/scripts/activate
 
     pip install -r requirements.txt
 
