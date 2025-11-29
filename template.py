@@ -15,6 +15,9 @@ list_of_files = [
     f"{project_name}/components/model_evaluation.py",
     f"{project_name}/components/data_validation.py",
     f"{project_name}/components/feature_extractor.py",
+    f"{project_name}/logging/__init__.py",
+    f"{project_name}/logging/logger.py",
+    f"{project_name}/exception/__init__.py",
     f"{project_name}/utils/__init__.py",
     f"{project_name}/utils/common.py",
     f"{project_name}/config/__init__.py",
@@ -32,7 +35,7 @@ list_of_files = [
     "requirements.txt",
     "setup.py",
     "research/research.ipynb",
-    "templates/index.html"
+
     
     
     
