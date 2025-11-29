@@ -1,16 +1,30 @@
 # Doing Data Science Project
 We are working with the Credit Card Fraud Prediction dataset (~555k transactions, 22+ attributes). The target variable is is_fraud (0/1), which we treat as ground truth for supervised classification. Our overall goal is to predict fraudulent transactions and understand which factors increase fraud risk.
 
+### if using conda:
+    conda create creditfraud
+    conda activate creditfraud
+
+### To install required libraries:
+#### if using pip
+    python -m venv venv
+    -mac:
+        source venv/bin/activate
+    -windows:
+        python venv/bin/activate
+    pip install -r requirements.txt
+
+
 ## File Structure
 ```bash
-├── .gitignore
+├── .gitignore   #files not to add to push to github
 ├── Dockerfile
-├── README.md
-├── config
+├── README.md   # documentation file    
+├── config      
     └── config.yaml
-├── creditfaultprediction
+├── creditfaultprediction       # packaged project folder
     ├── __init__.py
-    ├── components
+    ├── components              # contains all required component for the project
     │   ├── __init__.py
     │   ├── data_ingestion.py
     │   ├── data_transformation.py
@@ -21,25 +35,24 @@ We are working with the Credit Card Fraud Prediction dataset (~555k transactions
     ├── config
     │   ├── __init__.py
     │   └── configuration.py
-    ├── constants
+    ├── constants              # contains constant variables
     │   ├── __init__.py
-    │   └── training_pipeline.py
+    │   └── training_pipeline.py    
     │   │   └── __init__.py
     ├── entity
     │   ├── __init___.py
-    │   └── config_entity.py
-    ├── pipeline
+    │   └── config_entity.py    
+    ├── pipeline                # all components combined together
     │   └── __init__.py
     └── utils
     │   ├── __init__.py
-    │   └── common.py
-├── data_understanding.ipynb
+    │   └── common.py           # additional functions needed throughout project
 ├── main.py
 ├── requirements.txt
 ├── research
-    └── research.ipynb
+    └── data_understanding.ipynb     # all research needed for the project incl. visualizations  
 ├── setup.py
-└── template.py
+
 
 ``` 
 
@@ -60,7 +73,6 @@ Next steps:
     - Perform focused EDA on fraud vs. non-fraud by age group, category, time of day, and weekday.
     -Set up the Python ML pipeline: one-hot encoding for categorical features, 80/20 train–test split (stratified by is_fraud), and first baseline models (e.g. Logistic Regression, Random Forest) with appropriate evaluation metrics for imbalanced data (precision, recall, F1, confusion matrix).
 
-### To install required libraries:
-    pip install -r requirements.txt
+
 
 
