@@ -149,39 +149,39 @@ with right_col:
     csv = filtered.to_csv(index=False)
     st.download_button(label="Download filtered CSV", data=csv, file_name="filtered_fraud_data.csv", mime="text/csv")
 
-st.subheader("Geospatial Overview — Customer & Merchant locations (PyDeck)")
-map_options = st.multiselect("Map layers to show", options=["Customer heatmap","Merchant heatmap","Customer scatter","Merchant scatter"], default=["Customer heatmap","Customer scatter"])
+# st.subheader("Geospatial Overview — Customer & Merchant locations (PyDeck)")
+# map_options = st.multiselect("Map layers to show", options=["Customer heatmap","Merchant heatmap","Customer scatter","Merchant scatter"], default=["Customer heatmap","Customer scatter"])
 
-center_lat = filtered['lat'].median() if 'lat' in filtered.columns else 37.0902
-center_lon = filtered['long'].median() if 'long' in filtered.columns else -95.7129
-initial_view_state = pdk.ViewState(latitude=float(center_lat), longitude=float(center_lon), zoom=4, pitch=40)
+# center_lat = filtered['lat'].median() if 'lat' in filtered.columns else 37.0902
+# center_lon = filtered['long'].median() if 'long' in filtered.columns else -95.7129
+# initial_view_state = pdk.ViewState(latitude=float(center_lat), longitude=float(center_lon), zoom=4, pitch=40)
 
-layers = []
-if "Customer heatmap" in map_options and 'lat' in filtered.columns and 'long' in filtered.columns:
-    heat_data = filtered[['lat','long','is_fraud']].dropna()
-    if not heat_data.empty:
-        layers.append(pdk.Layer("HeatmapLayer", data=heat_data, get_position=['long','lat'], aggregation='SUM', get_weight='is_fraud + 1e-6'))
+# layers = []
+# if "Customer heatmap" in map_options and 'lat' in filtered.columns and 'long' in filtered.columns:
+#     heat_data = filtered[['lat','long','is_fraud']].dropna()
+#     if not heat_data.empty:
+#         layers.append(pdk.Layer("HeatmapLayer", data=heat_data, get_position=['long','lat'], aggregation='SUM', get_weight='is_fraud + 1e-6'))
 
-if "Merchant heatmap" in map_options and 'merch_lat' in filtered.columns and 'merch_long' in filtered.columns:
-    mheat = filtered[['merch_lat','merch_long','is_fraud']].dropna()
-    if not mheat.empty:
-        layers.append(pdk.Layer("HeatmapLayer", data=mheat, get_position=['merch_long','merch_lat'], aggregation='SUM', get_weight='is_fraud + 1e-6'))
+# if "Merchant heatmap" in map_options and 'merch_lat' in filtered.columns and 'merch_long' in filtered.columns:
+#     mheat = filtered[['merch_lat','merch_long','is_fraud']].dropna()
+#     if not mheat.empty:
+#         layers.append(pdk.Layer("HeatmapLayer", data=mheat, get_position=['merch_long','merch_lat'], aggregation='SUM', get_weight='is_fraud + 1e-6'))
 
-if "Customer scatter" in map_options and 'lat' in filtered.columns and 'long' in filtered.columns:
-    scatter_c = filtered[['lat','long','is_fraud','amt','city']].dropna()
-    if not scatter_c.empty:
-        layers.append(pdk.Layer("ScatterplotLayer", data=scatter_c, get_position=['long','lat'], get_fill_color='[255*is_fraud,140,30]', get_radius=200, pickable=True, auto_highlight=True))
+# if "Customer scatter" in map_options and 'lat' in filtered.columns and 'long' in filtered.columns:
+#     scatter_c = filtered[['lat','long','is_fraud','amt','city']].dropna()
+#     if not scatter_c.empty:
+#         layers.append(pdk.Layer("ScatterplotLayer", data=scatter_c, get_position=['long','lat'], get_fill_color='[255*is_fraud,140,30]', get_radius=200, pickable=True, auto_highlight=True))
 
-if "Merchant scatter" in map_options and 'merch_lat' in filtered.columns and 'merch_long' in filtered.columns:
-    scatter_m = filtered[['merch_lat','merch_long','is_fraud','amt','merchant']].dropna()
-    if not scatter_m.empty:
-        layers.append(pdk.Layer("ScatterplotLayer", data=scatter_m, get_position=['merch_long','merch_lat'], get_fill_color='[30,144,255*(1-is_fraud)]', get_radius=250, pickable=True, auto_highlight=True))
+# if "Merchant scatter" in map_options and 'merch_lat' in filtered.columns and 'merch_long' in filtered.columns:
+#     scatter_m = filtered[['merch_lat','merch_long','is_fraud','amt','merchant']].dropna()
+#     if not scatter_m.empty:
+#         layers.append(pdk.Layer("ScatterplotLayer", data=scatter_m, get_position=['merch_long','merch_lat'], get_fill_color='[30,144,255*(1-is_fraud)]', get_radius=250, pickable=True, auto_highlight=True))
 
-if layers:
-    r = pdk.Deck(layers=layers, initial_view_state=initial_view_state, tooltip={"text":"{city}\nAmount: {amt}\nFraud: {is_fraud}"})
-    st.pydeck_chart(r)
-else:
-    st.info("No geospatial layers could be created (missing lat/long columns).")
+# if layers:
+#     r = pdk.Deck(layers=layers, initial_view_state=initial_view_state, tooltip={"text":"{city}\nAmount: {amt}\nFraud: {is_fraud}"})
+#     st.pydeck_chart(r)
+# else:
+#     st.info("No geospatial layers could be created (missing lat/long columns).")
 
 st.subheader("Temporal patterns")
 if 'trans_dt' in filtered.columns:
