@@ -46,7 +46,7 @@ df2 = load_data(path_2)
 df3 = load_data(path_3)
 
 df = pd.concat([df1, df2, df3], ignore_index=True)
-
+print(df.columns)
 if df.shape[0] == 0:
     st.stop()
 
