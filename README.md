@@ -3,7 +3,7 @@ We are working with the Credit Card Fraud Prediction dataset (~555k transactions
 
 ### To install required libraries:
 ### if using conda:
-    conda create creditfraud
+    conda create -n creditfraud
 
     conda activate creditfraud
 

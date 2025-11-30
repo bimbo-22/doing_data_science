@@ -4,3 +4,10 @@ plotly
 seaborn
 matplotlib
 nbformat
+itables
+typing_extensions
+setuptools 
+wheel
+pyarrow 
+streamlit
+pydeck
