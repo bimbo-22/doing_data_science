@@ -37,8 +37,15 @@ def load_data(path: str):
     return df
 
 
-DATA_PATH = "fraud_test.csv"  
-df = load_data(DATA_PATH)
+path_1 = "../fraud_part1.csv"
+path_2 = "../fraud_part2.csv"
+path_3 = "../fraud_part2.csv"
+
+df1 = load_data(path_1)
+df2 = load_data(path_2)
+df3 = load_data(path_3)
+
+df = pd.concat([df1, df2, df3], ignore_index=True)
 
 if df.shape[0] == 0:
     st.stop()
