@@ -4,3 +4,5 @@ logs
 fraud_part1.csv
 fraud_part2.csv
 fraud_part3.csv
+mlruns/
+artifacts/

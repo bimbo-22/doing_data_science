@@ -17,4 +17,5 @@ ensure
 types-pyyaml
 python-box
 kagglehub
-sklearn
+scikit-learn
+mlflow

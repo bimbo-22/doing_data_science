@@ -21,6 +21,12 @@ We are working with the Credit Card Fraud Prediction dataset (~555k transactions
 
     pip install -r requirements.txt
 
+### To Run pipeline:
+    python main.py 
+
+### Link to drawboard:
+    https://excalidraw.com/#room=11fe17756923d6c4a728,t-7ao8OzhbM8reEgF3eC9Q
+
 
 ## File Structure
 ```bash
