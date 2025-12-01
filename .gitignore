@@ -1,2 +1,6 @@
 venv
 fraud_test.csv
+logs
+fraud_part1.csv
+fraud_part2.csv
+fraud_part3.csv

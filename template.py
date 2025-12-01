@@ -4,7 +4,7 @@ import logging
 
 logging.basicConfig(level=logging.INFO, format='[%(asctime)s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
-project_name="creditfaultprediction"
+project_name="creditfraud"
 
 list_of_files = [
     f"{project_name}/__init__.py",

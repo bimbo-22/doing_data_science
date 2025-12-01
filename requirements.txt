@@ -11,3 +11,10 @@ wheel
 pyarrow 
 streamlit
 pydeck
+pyyaml
+joblib
+ensure
+types-pyyaml
+python-box
+kagglehub
+sklearn

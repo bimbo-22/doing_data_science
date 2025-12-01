@@ -1,8 +1,8 @@
-from creditfraud.logging.logger import logger
+from creditfraud.logging.logger import logging
 import sys
 
 class CreditFraudException(Exception):
-    def _init__(self,error_message, error_details: sys):
+    def __init__(self,error_message, error_details: sys):
         self.error_message = error_message
         _,_,exc_tb = error_details.exc_info()
 
@@ -17,7 +17,7 @@ class CreditFraudException(Exception):
 # just testing the exception class
 if __name__ == "__main__":
     try:
-        logger.logging.info(" This is an info message entering try block")
+        logging.info(" This is an info message entering try block")
         a = 1/0
         print("testing exception")
     except Exception as e:
