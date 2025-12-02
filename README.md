@@ -21,6 +21,9 @@ We are working with the Credit Card Fraud Prediction dataset (~555k transactions
 
     pip install -r requirements.txt
 
+### To Run the visualization 
+    streamlit run app.py
+
 ### To Run pipeline:
     python main.py 
 
