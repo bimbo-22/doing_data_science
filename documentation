@@ -1,1 +1,127 @@
+# Meeting Minutes – Topic 03: Credit Card Fraud Prediction
+
+**Date:** 2025-11-28  
+**Time:** 09:00–09:30  
+**Location:** Zoom  
+**Teacher:** Jan Fabian Ehmke  
+
+## Participants
+
+| Role      | Name                               |
+|-----------|------------------------------------|
+| Teacher   | Jan Fabian Ehmke                   |
+| Student   | Klára Halouzková                   |
+| Student   | Anne Katharina Kinigadner-Walch    |
+| Student   | Abimbola Mohammed Ogunsakin        |
+
+**Excused:** Nina Bogunovic  
+
+---
+
+## 1. Project Status
+
+- **Dataset:** *Credit Card Fraud Prediction* (≈555,719 transactions, target variable `is_fraud` = 0/1).  
+- **Overall goal:**
+  - Build a **supervised classification model** to predict fraudulent transactions.
+  - Analyse **fraud risk patterns** across age groups, time of day, weekday, merchant categories, and locations.
+- **Work done so far:**
+  - Initial **data inspection**: no missing values, no duplicates, basic distributions checked.
+  - **Date & time features** engineered from `trans_date_trans_time`:
+    - Hour of day (`trans_time_group`),
+    - Month (`trans_month`),
+    - Weekday (`trans_dayOfWeek`).
+  - **Age** calculated from `dob` with planned **age groups**:
+    - 15–19, 20–29, 30–39, 40–49, 50–59, 60–69, 70–79, and 80+.
+  - Decision to **keep and use geodata**:
+    - Customer coordinates (`lat`, `long`),
+    - Merchant coordinates (`merch_lat`, `merch_long`).
+  - Planned analyses with geodata:
+    - Identify whether each merchant appears only once or has **multiple branches** (same merchant name, different coordinates).
+    - Later derive **distance-based features** between customer and merchant.
+    - Visual exploration (e.g. map of merchant locations in the USA).
+- **Implementation:** Project will be implemented **in Python** (not KNIME).  
+  The poster should include a **graphic high-level overview** of our Python workflow  
+  (data → feature engineering → models → evaluation).
+
+---
+
+## 2. Peer Review Session (Mid-December)
+
+- A **peer group meeting** is planned around **16 December**.
+- **Structure of the session:**
+  - The session time is split 50/50:
+    - Half of the time **our team presents** and answers questions.
+    - The other half the **peer team presents** and we ask them questions.
+- **Question sheet:**
+  - We will receive a **three-page question sheet** in advance.
+  - It contains **typical / guiding questions** for peer review.
+  - The same type of questions will be used by the other team for us, so we know the style of questions they may ask.
+- **Evaluation:**
+  - We are graded on **how constructive and specific our questions and feedback** are.
+  - Focus is on **peer review quality**, not on a fully polished performance.
+- **Format:**
+  - The peer review can be done **orally**; slides are optional.
+  - The session should be **time-efficient and interactive**.
+
+---
+
+## 3. Poster, Video, and Poster Fair (January)
+
+- **Deliverables:**
+  - A **poster** (templates will be provided).
+  - A **video** with a length of **up to ~4 minutes**  
+    (a few extra seconds, e.g. 4:10, are acceptable, but it should not be much longer).
+- **Relationship between poster and video:**
+  - The video serves as a **poster pitch**:
+    - Problem / task,
+    - Approach / methods,
+    - Key results.
+  - Recommended format:
+    - **Voice-over** explaining the poster,
+    - e.g. zooming into different parts of the poster, or using slides that mirror the poster layout.
+  - Team members can **alternate speaking**; the style is flexible.
+  - Core requirement: clearly present **approach and results** within the time limit.
+- **Poster fair setup:**
+  - In one part of the session, all students **watch the videos**.
+  - In the other part, students **visit posters, ask questions, and present at their posters**.
+  - The **best poster** will receive a small prize.
+
+---
+
+## 4. Methods, Documentation, and Open Questions
+
+- **Methods:**
+  - We are expected to apply **2–3 methods**, for example:
+    - Different classification models (e.g. logistic regression, random forest, etc.),
+    - And/or different strategies for handling class imbalance and evaluation.
+- **Documentation:**
+  - A clear, well-structured **project documentation** is **highly valued** and can earn **extra points**.
+  - If we use GitHub:
+    - The **repository** (code, notebooks/scripts) should be submitted.
+    - The **README** can serve as a compact project description (like a mini report).
+  - A good documentation should tell the **story of the project**:
+    - From data understanding → feature engineering → model training → evaluation → interpretation.
+- **Open questions:**
+  - We should explicitly formulate and address **open questions** in the project, e.g.:
+    - Does geodata (distance, branches) significantly improve fraud prediction?
+    - Are specific age groups, times of day, weekdays, or categories associated with clearly higher fraud risk?
+  - Showing how we investigated these open questions will **strengthen the project** and the final evaluation.
+
+---
+
+## 5. Action Items
+
+- [ ] Finalize **age group** definition and implementation (15–19, 20–29, …, 80+).  
+- [ ] Analyse **merchant structure**: single-location vs. multi-branch merchants.  
+- [ ] Plan focused **EDA** on fraud vs. non-fraud by:
+  - Age group,  
+  - Time of day and weekday,  
+  - Category,  
+  - Location/geodata.  
+- [ ] Set up the initial **Python ML pipeline**:
+  - One-hot encoding for categorical features,  
+  - 80/20 train–test split (stratified by `is_fraud`),  
+  - Train at least 2–3 models and evaluate with appropriate metrics for imbalanced data.  
+- [ ] Start drafting **poster structure** and **4-minute video concept**.  
+- [ ] Prepare for the **peer review session** (questions for the other team, short oral presentation of our own project).
 
