@@ -1,4 +1,4 @@
-# Meeting Minutes – Topic 03: Credit Card Fraud Prediction
+# Meetings Notes
 
 **Date:** 2025-11-28  
 **Time:** 09:00–09:30  
@@ -125,3 +125,20 @@
 - [ ] Start drafting **poster structure** and **4-minute video concept**.  
 - [ ] Prepare for the **peer review session** (questions for the other team, short oral presentation of our own project).
 
+--------------------------------------------------------------------------------------------
+# Meeting on 2/12/2025
+- most frauds: Sunday
+- most transactions: Sun, Mon, Tue
+- for interpretation: add percent graphics
+- investigate: whats happening in September
+- Plots for each state (?)
+- DROP 12.11. (we're probably missing data as they didnt stop counting at midnight)
+- Cut in 3 datasets: before sep, sep, after sep
+    - parts: beginning - 24.8., 25.8. - 1.9., 2.9. - end
+    - Search for patterns and differences between
+        - Category of merchant
+        - Why? Mistake in dataset or event?
+        - no problem if data is generated or sth - take what we have
+    - questions
+        - Lock down data
+        - Differences between states
