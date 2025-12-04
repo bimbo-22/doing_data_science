@@ -1,5 +1,7 @@
 venv
 fraud_test.csv
+fraud_edited.csv
+fraud_encoded.csv
 logs
 fraud_part1.csv
 fraud_part2.csv
