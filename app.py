@@ -39,7 +39,7 @@ def load_data(path: str):
 
 path_1 = "fraud_part1.csv"
 path_2 = "fraud_part2.csv"
-path_3 = "fraud_part2.csv"
+path_3 = "fraud_part3.csv"
 
 df1 = load_data(path_1)
 df2 = load_data(path_2)
