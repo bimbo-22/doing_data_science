@@ -8,3 +8,12 @@ fraud_part2.csv
 fraud_part3.csv
 mlruns/
 artifacts/
+@"
+.venv/
+linux_environment/
+linux_environment#/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.idea/
+"@ | Out-File -Encoding utf8 .gitignore

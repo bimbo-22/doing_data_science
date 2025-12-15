@@ -36,11 +36,8 @@ def load_data(path: str):
             df[c] = pd.to_numeric(df[c], errors='coerce')
     return df
 
-
 path = "fraud_test.csv"
 df = load_data(path)
-
-
 print(df.columns)
 if df.shape[0] == 0:
     st.stop()
@@ -173,7 +170,7 @@ if "Merchant scatter" in map_options and 'merch_lat' in filtered.columns and 'me
         layers.append(pdk.Layer("ScatterplotLayer", data=scatter_m, get_position=['merch_long','merch_lat'], get_fill_color='[30,144,255*(1-is_fraud)]', get_radius=250, pickable=True, auto_highlight=True))
 
 if layers:
-    r = pdk.Deck(layers=layers, initial_view_state=initial_view_state, tooltip={"text":"{city}\nAmount: {amt}\nFraud: {is_fraud}"})
+    r = pdk.Deck(layers=layers, initial_view_state=initial_view_state, tooltip={"text":"{city}\nAmount: {amt}\nFraud: {is_fraud}"})     
     st.pydeck_chart(r)
 else:
     st.info("No geospatial layers could be created (missing lat/long columns).")
