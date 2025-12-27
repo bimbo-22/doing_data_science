@@ -19,3 +19,6 @@ python-box
 kagglehub
 scikit-learn
 mlflow
+encoder
+xgboost
+category-encoders
