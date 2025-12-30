@@ -5,11 +5,13 @@ import pandas as pd
 
 TARGET_COLUMN = "is_fraud"
 PIPELINE_NAME: str = "credit_fraud_detection"
-ARTIFACT_DIR: str = "artifact"
+ARTIFACT_DIR: str = "Artifact"
 FILE_NAME: str = "fraud_test.csv"
 
 TRAIN_FILE_NAME: str = "train.csv"
 TEST_FILE_NAME: str = "test.csv"
+
+
 
 SCHEMA_FILE_PATH = os.path.join("data_schema", "schema.yaml")
 
@@ -20,15 +22,16 @@ PREPROCESSOR_FILE_NAME = "preprocessor.pkl"
 # starting with DATA INGESTION
 DATA_INGESTION_DIR_NAME: str = "data_ingestion"
 DATA_INGESTION_FEATURE_STORE_DIR: str = "feature_store"
-DATA_INGESTION_INGESTED_DIR: str = "ingested_data"
-DATA_INGESTION_TRAIN_TEST_SPLIT_RATIO: float = 0.3
-DATA_INGESTION_TRAIN_SPLIT_RANDOM_STATE: int = 42
+
 DATA_INTESTION_DOWNLOAD_URL: str = "kelvinkelue/credit-card-fraud-prediction"
 
 # DATA VALIDATION
 DATA_VALIDATION_DIR_NAME: str = "data_validation"
 DATA_VALIDATION_VALID_DIR: str = "validated"
 DATA_VALIDATION_INVALID_DIR: str = "invalid"
+VALID_FILE_NAME: str = "valid.csv"
+INVALID_FILE_NAME: str = "invalid.csv"
+
 
 
 # DATA TRANSFORMATION

@@ -1,0 +1,92 @@
+'Unnamed: 0':
+  dtype: int
+  nullable: false
+  is_target: false
+trans_date_trans_time:
+  dtype: categorical
+  nullable: false
+  is_target: false
+cc_num:
+  dtype: float
+  nullable: false
+  is_target: false
+merchant:
+  dtype: categorical
+  nullable: false
+  is_target: false
+category:
+  dtype: categorical
+  nullable: false
+  is_target: false
+amt:
+  dtype: float
+  nullable: false
+  is_target: false
+first:
+  dtype: categorical
+  nullable: false
+  is_target: false
+last:
+  dtype: categorical
+  nullable: false
+  is_target: false
+gender:
+  dtype: categorical
+  nullable: false
+  is_target: false
+street:
+  dtype: categorical
+  nullable: false
+  is_target: false
+city:
+  dtype: categorical
+  nullable: false
+  is_target: false
+state:
+  dtype: categorical
+  nullable: false
+  is_target: false
+zip:
+  dtype: int
+  nullable: false
+  is_target: false
+lat:
+  dtype: float
+  nullable: false
+  is_target: false
+long:
+  dtype: float
+  nullable: false
+  is_target: false
+city_pop:
+  dtype: int
+  nullable: false
+  is_target: false
+job:
+  dtype: categorical
+  nullable: false
+  is_target: false
+dob:
+  dtype: categorical
+  nullable: false
+  is_target: false
+trans_num:
+  dtype: categorical
+  nullable: false
+  is_target: false
+unix_time:
+  dtype: int
+  nullable: false
+  is_target: false
+merch_lat:
+  dtype: float
+  nullable: false
+  is_target: false
+merch_long:
+  dtype: float
+  nullable: false
+  is_target: false
+is_fraud:
+  dtype: int
+  nullable: false
+  is_target: true

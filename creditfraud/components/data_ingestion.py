@@ -1,53 +1,107 @@
-import os
+import os, sys
 import shutil
 import kagglehub
+import pandas as pd
+import yaml
+
 from creditfraud.entity.config_entity import DataIngestionConfig
+from creditfraud.exception.exception import CreditFraudException
+from creditfraud.entity.artifact_entity import DataIngestionArtifact
 from creditfraud.logging.logger import logging
+from creditfraud.constants.training_pipeline import (
+    TARGET_COLUMN,
+    SCHEMA_FILE_PATH
+)
 
 
 class DataIngestion:
-    def __init__(self, config: DataIngestionConfig):
-        self.config = config
+    def __init__(self, data_ingestion_config: DataIngestionConfig):
+        try:
+            self.data_ingestion_config = data_ingestion_config
+        except Exception as e:
+            raise CreditFraudException(e, sys)
 
-    def download_file(self):
-        target_dir = self.config.local_data_file   
+    @staticmethod
+    def infer_schema(df: pd.DataFrame) -> dict:
+        """
+        Infer schema (dtype, nullable, target) from dataframe
+        """
+        schema = {}
 
+        for column in df.columns:
+            dtype = df[column].dtype
 
-        if os.path.exists(target_dir):
-            logging.info(f"Dataset already exists at {target_dir}. Skipping download.")
-            return
+            if pd.api.types.is_integer_dtype(dtype):
+                col_type = "int"
+            elif pd.api.types.is_float_dtype(dtype):
+                col_type = "float"
+            elif pd.api.types.is_bool_dtype(dtype):
+                col_type = "bool"
+            else:
+                col_type = "categorical"
 
-        logging.info(f"Downloading dataset from Kaggle: {self.config.source_URL}")
-        
-        # Download dataset through KaggleHub
-        kaggle_path = kagglehub.dataset_download(self.config.source_URL)
-        logging.info(f"Dataset downloaded to temporary directory: {kaggle_path}")
+            schema[column] = {
+                "dtype": col_type,
+                "nullable": bool(df[column].isnull().any()),
+                "is_target": column == TARGET_COLUMN
+            }
 
-        # Copy dataset folder into artifacts
-        shutil.copytree(kaggle_path, target_dir)
-        logging.info(f"Dataset successfully copied to: {target_dir}")
+        return schema
 
-        self.rename_to_fraud_test()
+    @staticmethod
+    def save_schema(schema: dict, schema_path: str):
+        os.makedirs(os.path.dirname(schema_path), exist_ok=True)
+        with open(schema_path, "w") as f:
+            yaml.dump(schema, f, sort_keys=False)
 
-    def rename_to_fraud_test(self):
-        data_dir = self.config.local_data_file
+    def download_file_(self):
+        try:
+            file_path = self.data_ingestion_config.feature_store_file_path
+            dir_path = os.path.dirname(file_path)
+            os.makedirs(dir_path, exist_ok=True)
 
-        if not os.path.exists(data_dir):
-            logging.warning(f"Data directory not found: {data_dir}")
-            return
+            if os.path.exists(file_path):
+                logging.info("Feature store file already exists. Skipping download.")
+                return
 
-        csv_files = [f for f in os.listdir(data_dir) if f.endswith(".csv")]
+            kaggle_path = kagglehub.dataset_download(
+                self.data_ingestion_config.source_url
+            )
 
-        if not csv_files:
-            logging.warning(f"No CSV files found in {data_dir}. Cannot rename.")
-            return
+            csv_files = [
+                f for f in os.listdir(kaggle_path) if f.endswith(".csv")
+            ]
 
-        original_path = os.path.join(data_dir, csv_files[0])
-        new_path = os.path.join(data_dir, "fraud_test.csv")
+            if not csv_files:
+                raise CreditFraudException(
+                    Exception("No CSV file found in Kaggle dataset"), sys
+                )
 
-        if os.path.exists(new_path):
-            os.remove(new_path)
+            shutil.copy2(
+                os.path.join(kaggle_path, csv_files[0]),
+                file_path
+            )
 
-        os.rename(original_path, new_path)
-        logging.info(f"Renamed {csv_files[0]} → fraud_test.csv")
+            logging.info(f"Dataset copied to {file_path}")
 
+            # get the schema
+            df = pd.read_csv(file_path)
+            schema = self.infer_schema(df)
+            self.save_schema(schema, SCHEMA_FILE_PATH)
+
+            logging.info(f"Schema saved to {SCHEMA_FILE_PATH}")
+
+        except Exception as e:
+            raise CreditFraudException(e, sys)
+
+    def initiate_data_ingestion(self) -> DataIngestionArtifact:
+        try:
+            self.download_file_()
+            logging.info("Data ingestion completed successfully.")
+
+            return DataIngestionArtifact(
+                feature_store_file_path=self.data_ingestion_config.feature_store_file_path
+            )
+
+        except Exception as e:
+            raise CreditFraudException(e, sys)
