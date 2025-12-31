@@ -22,7 +22,9 @@ PREPROCESSOR_FILE_NAME = "preprocessor.pkl"
 # starting with DATA INGESTION
 DATA_INGESTION_DIR_NAME: str = "data_ingestion"
 DATA_INGESTION_FEATURE_STORE_DIR: str = "feature_store"
-
+DATA_INGESTION_INGESTED_DIR: str = "ingested_data"
+DATA_INGESTION_TRAIN_TEST_SPLIT_RATIO: float = 0.3
+DATA_INGESTION_TRAIN_SPLIT_RANDOM_STATE: int = 42
 DATA_INTESTION_DOWNLOAD_URL: str = "kelvinkelue/credit-card-fraud-prediction"
 
 # DATA VALIDATION

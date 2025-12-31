@@ -12,6 +12,7 @@ from creditfraud.constants.training_pipeline import (
     TARGET_COLUMN,
     SCHEMA_FILE_PATH
 )
+from sklearn.model_selection import train_test_split
 
 
 class DataIngestion:
@@ -90,17 +91,44 @@ class DataIngestion:
             self.save_schema(schema, SCHEMA_FILE_PATH)
 
             logging.info(f"Schema saved to {SCHEMA_FILE_PATH}")
+            return df
 
+        except Exception as e:
+            raise CreditFraudException(e, sys)
+    def split_data_into_train_test(self, dataframe: pd.DataFrame):
+        try: 
+            train_set, test_set = train_test_split(
+                dataframe, 
+                test_size=self.data_ingestion_config.train_test_split_ratio, 
+                random_state=self.data_ingestion_config.train_test_split_random_state,
+                stratify=dataframe[TARGET_COLUMN])
+            logging.info("performing train test split on the dataframe")
+            
+            logging.info("train test split completed")
+            
+            dir_path =  os.path.dirname(self.data_ingestion_config.training_file_path)
+            os.makedirs(dir_path, exist_ok=True)
+            
+            logging.info("exporting train and test file path ")
+            
+            train_set.to_csv(self.data_ingestion_config.training_file_path, index=False, header=True)
+            
+            test_set.to_csv(self.data_ingestion_config.testing_file_path, index=False, header=True)
+            
+            logging.info("train and test file path exported")
+            
         except Exception as e:
             raise CreditFraudException(e, sys)
 
     def initiate_data_ingestion(self) -> DataIngestionArtifact:
         try:
-            self.download_file_()
+            dataframe = self.download_file_()
+            self.split_data_into_train_test(dataframe)
             logging.info("Data ingestion completed successfully.")
 
             return DataIngestionArtifact(
-                feature_store_file_path=self.data_ingestion_config.feature_store_file_path
+                training_file_path=self.data_ingestion_config.training_file_path,
+                testing_file_path=self.data_ingestion_config.testing_file_path
             )
 
         except Exception as e:

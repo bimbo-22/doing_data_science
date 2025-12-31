@@ -19,8 +19,9 @@ class DataValidation:
         data_validation_config: DataValidationConfig,
         data_ingestion_artifact: DataIngestionArtifact
     ):
-        self.config = data_validation_config
-        self.ingestion_artifact = data_ingestion_artifact
+        self.data_validation_config = data_validation_config
+        self.data_ingestion_artifact = data_ingestion_artifact
+        self.schema_config = self.read_yaml(SCHEMA_FILE_PATH)
 
     @staticmethod
     def read_yaml(path: str) -> dict:
@@ -32,6 +33,12 @@ class DataValidation:
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "w") as f:
             yaml.dump(content, f, sort_keys=False)
+    @staticmethod
+    def read_data(file_path: str) -> pd.DataFrame:
+        try:
+            return pd.read_csv(file_path)
+        except Exception as e:
+            raise CreditFraudException(e, sys)
 
     def validate_schema(self, df: pd.DataFrame, schema: dict) -> bool:
         schema_columns = set(schema.keys())
@@ -53,55 +60,63 @@ class DataValidation:
 
         return True
 
-    def detect_drift(self, df: pd.DataFrame, schema: dict) -> dict:
-        drift_report = {}
+    # def detect_drift(self, df: pd.DataFrame, schema: dict) -> dict:
+    #     drift_report = {}
 
-        for col, meta in schema.items():
-            if meta["dtype"] in ["int", "float"] and not meta["is_target"]:
-                drift_report[col] = {
-                    "mean": float(df[col].mean()),
-                    "std": float(df[col].std())
-                }
+    #     for col, meta in schema.items():
+    #         if meta["dtype"] in ["int", "float"] and not meta["is_target"]:
+    #             drift_report[col] = {
+    #                 "mean": float(df[col].mean()),
+    #                 "std": float(df[col].std())
+    #             }
 
-        return drift_report
+    #     return drift_report
 
     def initiate_data_validation(self) -> DataValidationArtifact:
         try:
             logging.info("Starting data validation")
+            train_file_path = self.data_ingestion_artifact.training_file_path
+            test_file_path = self.data_ingestion_artifact.testing_file_path
+            
+            train_dataframe = DataValidation.read_data(train_file_path)
+            test_dataframe = DataValidation.read_data(test_file_path)
 
-            os.makedirs(self.config.schema_dir, exist_ok=True)
-            os.makedirs(self.config.valid_dir, exist_ok=True)
-            os.makedirs(self.config.invalid_dir, exist_ok=True)
-            os.makedirs(self.config.drift_dir, exist_ok=True)
+            # os.makedirs(self.config.schema_dir, exist_ok=True)
+            # os.makedirs(self.config.valid_dir, exist_ok=True)
+            # os.makedirs(self.config.invalid_dir, exist_ok=True)
+            # os.makedirs(self.config.drift_dir, exist_ok=True)
 
-            df = pd.read_csv(self.ingestion_artifact.feature_store_file_path)
+            # df = pd.read_csv(self.ingestion_artifact.feature_store_file_path)
 
-
+            dir_path = os.path.dirname(self.data_validation_config.valid_train_file_path)
+            os.makedirs(dir_path, exist_ok=True)
             if not os.path.exists(SCHEMA_FILE_PATH):
                 raise FileNotFoundError("Global schema file not found")
 
-            shutil.copy2(
-                SCHEMA_FILE_PATH,
-                self.config.schema_file_path
-            )
 
-            schema = self.read_yaml(self.config.schema_file_path)
+            schema = self.read_yaml(SCHEMA_FILE_PATH)
 
-            is_valid = self.validate_schema(df, schema)
+            is_train_valid = self.validate_schema(train_dataframe, schema)
+            is_test_valid = self.validate_schema(test_dataframe, schema)
 
-            if is_valid:
-                df.to_csv(self.config.valid_file_path, index=False)
+            if is_train_valid and is_test_valid:
+                train_dataframe.to_csv(self.data_validation_config.valid_train_file_path, index=False)
+                test_dataframe.to_csv(self.data_validation_config.valid_test_file_path, index=False)
             else:
-                df.to_csv(self.config.invalid_file_path, index=False)
-
-            drift_report = self.detect_drift(df, schema)
-            self.write_yaml(self.config.drift_report_path, drift_report)
+                train_dataframe.to_csv(self.data_validation_config.invalid_train_file_path, index=False)
+                test_dataframe.to_csv(self.data_validation_config.invalid_test_file_path, index=False)
+            # drift_report = self.detect_drift(, schema)
+            # self.write_yaml(self.config.drift_report_path, drift_report)
 
             return DataValidationArtifact(
-                valid_file_path=self.config.valid_file_path,
-                invalid_file_path=self.config.invalid_file_path,
-                schema_file_path=self.config.schema_file_path,
-                drift_report_path=self.config.drift_report_path
+                valid_train_file_path=self.data_validation_config.valid_train_file_path,
+                valid_test_file_path=self.data_validation_config.valid_test_file_path,
+                invalid_train_file_path=self.data_validation_config.invalid_train_file_path,
+                invalid_test_file_path=self.data_validation_config.invalid_test_file_path,
+                # valid_file_path=self.config.valid_file_path,
+                # invalid_file_path=self.config.invalid_file_path,
+                # schema_file_path=self.config.schema_file_path,
+                # drift_report_path=self.config.drift_report_path
             )
 
         except Exception as e:

@@ -1,69 +1,113 @@
+import sys
 import pandas as pd
-from pathlib import Path
-from sklearn.model_selection import train_test_split
+import numpy as np
+from scipy.sparse import save_npz
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+import category_encoders as ce
 from creditfraud.entity.config_entity import DataTransformationConfig
+from creditfraud.entity.artifact_entity import (
+    DataValidationArtifact,
+    DataTransformationArtifact,
+)
+from creditfraud.exception.exception import CreditFraudException
 from creditfraud.logging.logger import logging
+from creditfraud.constants.training_pipeline import TARGET_COLUMN
+from creditfraud.utils.main_utils.utils import *
+
 
 class DataTransformation:
-    def __init__(self, config: DataTransformationConfig):
-        self.config = config
-        self.config.root_dir.mkdir(parents=True, exist_ok=True)
+    def __init__(self, data_validation_artifact:DataValidationArtifact, data_transformation_config: DataTransformationConfig):
+        self.data_validation_artifact = data_validation_artifact
+        self.data_transformation_config = data_transformation_config
 
-    def apply_transformations(self, df: pd.DataFrame) -> pd.DataFrame:
-        logging.info("Starting transformation...")
+    @staticmethod
+    def read_data(file_path):
+        return pd.read_csv(file_path)
 
-        df = df.copy()
-
-        # Rename variables
+    def apply_transformations(self, df):
         if "Unnamed: 0" in df.columns:
-            df = df.rename(columns={"Unnamed: 0": "id"})
+            df.rename(columns={"Unnamed: 0": "id"}, inplace=True)
 
-        # Remove fraud_ prefix
         df["merchant"] = df["merchant"].str.replace("fraud_", "", regex=False)
 
-        # Split date & time
-        df[["trans_date", "trans_time"]] = df["trans_date_trans_time"].str.split(" ", expand=True)
-        df = df.drop(columns=["trans_date_trans_time"])
+        df["trans_date_trans_time"] = pd.to_datetime(
+        df["trans_date_trans_time"],
+        format="%d/%m/%Y %H:%M",
+        errors="coerce"
+        )
+
+        df["year"] = df["trans_date_trans_time"].dt.year
+        df["month"] = df["trans_date_trans_time"].dt.month
+        df["day"] = df["trans_date_trans_time"].dt.day
+        df["hour"] = df["trans_date_trans_time"].dt.hour
+        df["dayofweek"] = df["trans_date_trans_time"].dt.dayofweek
+        df["is_weekend"] = df["dayofweek"].isin([5, 6]).astype(int)
+        df.drop(columns=["trans_date_trans_time"], inplace=True)
+
+        df.drop(
+            columns=[
+                "cc_num", "dob", "first", "last", "street",
+                "trans_num", "id", "zip", "unix_time", "lat", "long"
+            ],
+            errors="ignore",
+            inplace=True,
+        )
 
         return df
 
-    def split_and_save(self, df: pd.DataFrame):
-        logging.info("Starting train-test split...")
-
-        train, test = train_test_split(
-            df,
-            test_size=self.config.test_size,
-            random_state=42,
-            stratify=df["is_fraud"]
+    def get_preprocessor(self, target_enc_cols, one_hot_cols, numeric_cols):
+        return ColumnTransformer(
+            transformers=[
+                ("target_enc", ce.TargetEncoder(), target_enc_cols),
+                ("onehot", OneHotEncoder(handle_unknown="ignore"), one_hot_cols),
+                ("num", StandardScaler(), numeric_cols),
+            ]
         )
 
-        # Paths
-        cleaned_path = self.config.root_dir / "cleaned.csv"
-        train_path = self.config.root_dir / "train.csv"
-        test_path = self.config.root_dir / "test.csv"
+    def initiate_data_transformation(self):
+        try:
+            train_df = self.apply_transformations(
+                self.read_data(self.data_validation_artifact.valid_train_file_path)
+            )
+            test_df = self.apply_transformations(
+                self.read_data(self.data_validation_artifact.valid_test_file_path)
+            )
 
-        # Save all CSVs
-        df.to_csv(cleaned_path, index=False)
-        train.to_csv(train_path, index=False)
-        test.to_csv(test_path, index=False)
+            X_train = train_df.drop(columns=[TARGET_COLUMN])
+            y_train = train_df[TARGET_COLUMN].to_numpy()
 
-        logging.info(f"Saved cleaned dataset: {cleaned_path}")
-        logging.info(f"Saved train dataset: {train_path}")
-        logging.info(f"Saved test dataset: {test_path}")
+            X_test = test_df.drop(columns=[TARGET_COLUMN])
+            y_test = test_df[TARGET_COLUMN].to_numpy()
 
-        return df, train, test
+            cat_cols = X_train.select_dtypes(include="object").columns.tolist()
+            num_cols = X_train.select_dtypes(exclude="object").columns.tolist()
 
-    def run_transformation(self):
-        logging.info("Loading data...")
+            preprocessor = self.get_preprocessor(
+                target_enc_cols=[],
+                one_hot_cols=cat_cols,
+                numeric_cols=num_cols,
+            )
 
-        df = pd.read_csv(self.config.data_path)
-        logging.info(f"Raw data shape: {df.shape}")
+            X_train_t = preprocessor.fit_transform(X_train, y_train)
+            X_test_t = preprocessor.transform(X_test)
 
-        # Apply transformations
-        df_clean = self.apply_transformations(df)
-        logging.info(f"Cleaned data shape: {df_clean.shape}")
+            os.makedirs(self.data_transformation_config.transformed_data_dir, exist_ok=True)
 
-        # Split + save
-        cleaned, train, test = self.split_and_save(df_clean)
+            save_npz(self.data_transformation_config.transformed_train_x_file_path, X_train_t)
+            save_npz(self.data_transformation_config.transformed_test_x_file_path, X_test_t)
+            np.save(self.data_transformation_config.transformed_train_y_file_path, y_train)
+            np.save(self.data_transformation_config.transformed_test_y_file_path, y_test)
 
-        return cleaned, train, test
+            save_object(self.data_transformation_config.transformed_object_file_path, preprocessor)
+
+            return DataTransformationArtifact(
+                transformed_object_file_path=self.data_transformation_config.transformed_object_file_path,
+                transformed_train_x_file_path=self.data_transformation_config.transformed_train_x_file_path,
+                transformed_train_y_file_path=self.data_transformation_config.transformed_train_y_file_path,
+                transformed_test_x_file_path=self.data_transformation_config.transformed_test_x_file_path,
+                transformed_test_y_file_path=self.data_transformation_config.transformed_test_y_file_path,
+            )
+
+        except Exception as e:
+            raise CreditFraudException(e, sys)

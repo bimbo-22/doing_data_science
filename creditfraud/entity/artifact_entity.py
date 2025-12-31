@@ -3,45 +3,41 @@ from pathlib import Path
 
 @dataclass
 class DataIngestionArtifact:
-    feature_store_file_path: str
+
+    training_file_path: str
+    testing_file_path: str
 
 
 @dataclass
 class DataValidationArtifact:
-    valid_file_path: str
-    invalid_file_path: str
-    schema_file_path: str
-    drift_report_path: str
+    valid_train_file_path: str
+    valid_test_file_path: str
+    invalid_train_file_path: str
+    invalid_test_file_path: str
+
+    # schema_file_path: str
+    # drift_report_path: str
 
 
 @dataclass
 class DataTransformationArtifact:
-    """
-    Configuration class for data transformation.
-    
-    Attributes:
-        root_dir (Path): Root directory for data transformation artifacts.
-        data_path (Path): Path to the input data file for transformation.
-        test_size (float): Proportion of the dataset to include in the test split.
-    """
-    root_dir: Path
-    data_path: Path
-    test_size: float
-    
+    transformed_object_file_path: str
+    transformed_train_x_file_path: str
+    transformed_train_y_file_path: str
+    transformed_test_x_file_path: str
+    transformed_test_y_file_path: str
+
+@dataclass
+class ClassificationMetricArtifact:
+    f1_score: float
+    accuracy_score: float
+    precision_score: float
+    recall_score: float
+    roc_auc_score: float
+
 @dataclass
 class ModelTrainerArtifact:
-    root_dir: Path
-    train_data_path: Path
-    test_data_path: Path
-    model_name: str
-    target_column: str
+    trained_model_file_path: str
+    train_metric_artifact: ClassificationMetricArtifact
+    test_metric_artifact: ClassificationMetricArtifact
     
-@dataclass
-class ModelEvaluationArtifact:
-    root_dir: Path
-    test_data_path: Path
-    model_path: Path
-    all_params: dict
-    metric_file_name: Path
-    target_column: str
-    mlflow_uri: str

@@ -12,7 +12,8 @@ from creditfraud.exception.exception import CreditFraudException
 import numpy as np
 import pickle
 from sklearn.metrics import f1_score
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
+from creditfraud.utils.ml_utils.metric.classification_metric import get_classification_score
 
 def read_yaml_file(file_path: str) -> dict:
     try:
@@ -70,26 +71,39 @@ def load_numpy_array_data(file_path: str) -> np.array:
     
 def evaluate_models(X_train, y_train, X_test, y_test, models, params):
     try:
-        report = {}
+        model_report = {}
+        best_params_all = {}
+        all_metrics = {}
         for model_name, model in models.items():
-            model_params = params[model_name]
-            
-            gs = GridSearchCV(model, model_params, cv=3, verbose=0)
-            gs.fit(X_train, y_train)
-            
-            model.set_params(**gs.best_params_)
+            param = params.get(model_name, {})
+            rs = RandomizedSearchCV(model, param, cv=3, n_iter=10)  # Reverted to RandomizedSearchCV
+            rs.fit(X_train, y_train)
+            best_params_all[model_name] = rs.best_params_
+            model.set_params(**rs.best_params_)
             model.fit(X_train, y_train)
-            
             y_train_pred = model.predict(X_train)
-            
             y_test_pred = model.predict(X_test)
-            
-            train_model_score = f1_score(y_train, y_train_pred, average='weighted')
-            
-            test_model_score = f1_score(y_test, y_test_pred, average='weighted')
-            
-            report[model_name] = test_model_score
-        return report
+            train_metric = get_classification_score(y_train, y_train_pred)
+            test_metric = get_classification_score(y_test, y_test_pred)
+            all_metrics[model_name] = {
+                "train": {
+                    "f1_score": train_metric.f1_score,
+                    "accuracy_score": train_metric.accuracy_score,
+                    "precision_score": train_metric.precision_score,
+                    "recall_score": train_metric.recall_score,
+                    "roc_auc_score": train_metric.roc_auc_score,
+                },
+                "test": {
+                    "f1_score": test_metric.f1_score,
+                    "accuracy_score": test_metric.accuracy_score,
+                    "precision_score": test_metric.precision_score,
+                    "recall_score": test_metric.recall_score,
+                    "roc_auc_score": test_metric.roc_auc_score,
+                },
+            }
+            model_report[model_name] = test_metric.f1_score  # Use test F1 for selection
+            logging.info(f"Best parameters for {model_name}: {rs.best_params_}")
+        return model_report, best_params_all, all_metrics
             
     except Exception as e:
         raise CreditFraudException(e, sys) from e
