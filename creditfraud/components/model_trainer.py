@@ -32,7 +32,12 @@ from sklearn.metrics import precision_recall_curve
 from mlflow.models import infer_signature
 
 # MLflow env
-mlflow_tracking_uri = os.getenv("MLFLOW_TRACKING_URI", "sqlite:///mlflow.db")  # Default to SQLite to avoid filesystem deprecation warning
+# mlflow_tracking_uri = os.getenv("MLFLOW_TRACKING_URI", "sqlite:///mlflow.db")  # Default to SQLite to avoid filesystem deprecation warning
+
+MLFLOW_DIR = os.path.join(os.getcwd(), "mlruns")
+os.makedirs(MLFLOW_DIR, exist_ok=True)
+
+mlflow.set_tracking_uri(f"file:///{MLFLOW_DIR.replace(os.sep, '/')}")
 
 class ModelTrainer:
     def __init__(
@@ -59,7 +64,7 @@ class ModelTrainer:
             "GradientBoostingClassifier": GradientBoostingClassifier(),
             "AdaBoostClassifier": AdaBoostClassifier(),
             "Xgboost": XGBClassifier(
-                eval_metric="logloss"  # Removed deprecated use_label_encoder
+                eval_metric="logloss"  
             ),
             "LightGBM": LGBMClassifier(class_weight="balanced", verbose=-1),  # Suppress LightGBM info logs
         }
@@ -166,8 +171,8 @@ class ModelTrainer:
         with open(metrics_path, 'w') as f:
             yaml.safe_dump(metrics, f)
         logging.info(f"Metrics saved to {metrics_path}")
-
-        mlflow.set_tracking_uri(mlflow_tracking_uri)
+        mlflow.autolog()
+        mlflow.set_tracking_uri(f"file:///{MLFLOW_DIR.replace(os.sep, '/')}")
         with mlflow.start_run(run_name=best_model_name):
             mlflow.log_params({"model": best_model_name, "threshold": best_threshold})
             mlflow.log_metrics(
