@@ -64,7 +64,7 @@ class DataTransformation:
                 ("num", StandardScaler(), numeric_cols),
             ]
         )
-
+    
     def initiate_data_transformation(self):
         try:
             train_df = self.apply_transformations(
