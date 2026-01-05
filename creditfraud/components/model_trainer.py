@@ -6,6 +6,7 @@ import mlflow.sklearn
 import matplotlib.pyplot as plt
 import shap
 from mlflow.models.signature import infer_signature
+import yaml
 
 from scipy.sparse import load_npz
 from sklearn.metrics import (
@@ -43,9 +44,7 @@ from creditfraud.utils.ml_utils.metric.classification_metric import (
 from creditfraud.utils.ml_utils.model.estimator import FraudModel
 
 
-# ============================================================
-# MLflow SAFE LOCAL SETUP (cross-OS, non-root)
-# ============================================================
+
 PROJECT_ROOT = os.getcwd()
 MLFLOW_DIR = os.path.join(PROJECT_ROOT, "mlruns")
 os.makedirs(MLFLOW_DIR, exist_ok=True)
@@ -62,9 +61,6 @@ class ModelTrainer:
         self.model_trainer_config = model_trainer_config
         self.data_transformation_artifact = data_transformation_artifact
 
-    # ============================================================
-    # REQUIRED METHODS (YOU CALLED OUT — NOW INCLUDED)
-    # ============================================================
     def tune_threshold(self, y_true, y_proba):
         precision, recall, thresholds = precision_recall_curve(y_true, y_proba)
         f1_scores = (2 * precision * recall) / (precision + recall + 1e-8)
@@ -94,9 +90,6 @@ class ModelTrainer:
         except Exception as e:
             logging.warning(f"SHAP skipped: {e}")
 
-    # ============================================================
-    # TRAINING LOGIC
-    # ============================================================
     def train_model(self, X_train, y_train, X_test, y_test):
 
         models = {
@@ -111,9 +104,7 @@ class ModelTrainer:
             "LightGBM": LGBMClassifier(class_weight="balanced", verbose=-1),
         }
 
-        # ========================================================
-        # YOUR HYPERPARAMETERS (UNCHANGED, COMMENTS KEPT)
-        # ========================================================
+
         params = {
             "DecisionTreeClassifier": {
                 "criterion": ["gini", "entropy", "log_loss"],
@@ -176,10 +167,46 @@ class ModelTrainer:
 
         train_metric = get_classification_score(y_train, y_train_pred)
         test_metric = get_classification_score(y_test, y_test_pred)
+        
+        metrics_path = os.path.join(
+            os.path.dirname(self.model_trainer_config.trained_model_file_path),
+            "metrics.yaml"
+        )
+        os.makedirs(
+            os.path.dirname(self.model_trainer_config.trained_model_file_path),
+            exist_ok=True,
+        )
+        metrics = {
+            "all_models": {
+                model_name: {
+                    "hyperparameters": best_params_all.get(model_name, {}),
+                    "train": {k: float(v) for k, v in all_metrics[model_name]["train"].items()},
+                    "test": {k: float(v) for k, v in all_metrics[model_name]["test"].items()},
+                } for model_name in model_report
+            },
+            "best_model": {
+                "name": best_model_name,
+                "threshold": float(best_threshold),
+                "train": {
+                    "f1_score": float(train_metric.f1_score),
+                    "accuracy_score": float(train_metric.accuracy_score),
+                    "precision_score": float(train_metric.precision_score),
+                    "recall_score": float(train_metric.recall_score),
+                    "roc_auc_score": float(train_metric.roc_auc_score),
+                },
+                "test": {
+                    "f1_score": float(test_metric.f1_score),
+                    "accuracy_score": float(test_metric.accuracy_score),
+                    "precision_score": float(test_metric.precision_score),
+                    "recall_score": float(test_metric.recall_score),
+                    "roc_auc_score": float(test_metric.roc_auc_score),
+                },
+            }
+        }
+        with open(metrics_path, 'w') as f:
+            yaml.safe_dump(metrics, f)
+        logging.info(f"Metrics saved to {metrics_path}")
 
-        # ========================================================
-        # MLflow logging
-        # ========================================================
         with mlflow.start_run(run_name=best_model_name):
 
             mlflow.log_param("best_model", best_model_name)
@@ -243,9 +270,7 @@ class ModelTrainer:
                 input_example=input_example,
             )
 
-        # ========================================================
-        # SAVE FraudModel (model + preprocessor + threshold)
-        # ========================================================
+
         preprocessor = load_object(
             self.data_transformation_artifact.transformed_object_file_path
         )
@@ -273,9 +298,7 @@ class ModelTrainer:
             test_metric_artifact=test_metric,
         )
 
-    # ============================================================
-    # PIPELINE ENTRY POINT
-    # ============================================================
+
     def initiate_model_trainer(self) -> ModelTrainerArtifact:
         try:
             X_train = load_npz(
