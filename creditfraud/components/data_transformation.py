@@ -85,9 +85,11 @@ class DataTransformation:
 
             cat_cols = X_train.select_dtypes(include="object").columns.tolist()
             num_cols = X_train.select_dtypes(exclude="object").columns.tolist()
+            target_enc_cols = ["merchant", "job"]
+
 
             preprocessor = self.get_preprocessor(
-                target_enc_cols=[],
+                target_enc_cols=target_enc_cols,
                 one_hot_cols=cat_cols,
                 numeric_cols=num_cols,
             )
@@ -98,7 +100,7 @@ class DataTransformation:
             if self.data_transformation_config.resampling_method == 'smotetomek':
                 logging.info("Applying SMOTETomek to balance training data")
                 print("=== applying  sampling ===")
-                smotetomek = SMOTETomek(random_state=42)
+                smotetomek = SMOTETomek(random_state=42,)
                 X_train_dense = X_train_t.toarray()
                 X_train_t, y_train = smotetomek.fit_resample(X_train_dense, y_train)
                 X_train_t = csr_matrix(X_train_t)
