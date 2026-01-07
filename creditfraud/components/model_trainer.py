@@ -132,7 +132,7 @@ class ModelTrainer:
             },
             "LogisticRegression": {
                 "penalty": ["l2", None],
-                # "C": [100, 10, 1.0, 0.1, 0.01],
+                "C": [100, 10, 1.0, 0.1, 0.01],
                 "solver": ["newton-cg", "lbfgs", "liblinear", "sag", "saga"],
             },
             "AdaBoostClassifier": {
