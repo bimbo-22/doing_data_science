@@ -109,6 +109,7 @@ class DataTransformationConfig:
             training_pipeline.DATA_TRANSFORMATION_TRANSFORMED_OBJECT_DIR,
             training_pipeline.PREPROCESSING_OBJECT_FILE_NAME
         )
+        self.resampling_method = 'smotetomek'  # Options: 'smotetomek', 'none' , etc.
 
         self.transformed_train_x_file_path = os.path.join(
             self.transformed_data_dir, "train_X.npz"

@@ -10,6 +10,8 @@ from creditfraud.entity.artifact_entity import (
     DataValidationArtifact,
     DataTransformationArtifact,
 )
+from imblearn.combine import SMOTETomek
+from scipy.sparse import csr_matrix
 from creditfraud.exception.exception import CreditFraudException
 from creditfraud.logging.logger import logging
 from creditfraud.constants.training_pipeline import TARGET_COLUMN
@@ -20,6 +22,7 @@ class DataTransformation:
     def __init__(self, data_validation_artifact:DataValidationArtifact, data_transformation_config: DataTransformationConfig):
         self.data_validation_artifact = data_validation_artifact
         self.data_transformation_config = data_transformation_config
+        
 
     @staticmethod
     def read_data(file_path):
@@ -91,7 +94,16 @@ class DataTransformation:
 
             X_train_t = preprocessor.fit_transform(X_train, y_train)
             X_test_t = preprocessor.transform(X_test)
-
+            print("=== starting sampling ===")
+            if self.data_transformation_config.resampling_method == 'smotetomek':
+                logging.info("Applying SMOTETomek to balance training data")
+                print("=== applying  sampling ===")
+                smotetomek = SMOTETomek(random_state=42)
+                X_train_dense = X_train_t.toarray()
+                X_train_t, y_train = smotetomek.fit_resample(X_train_dense, y_train)
+                X_train_t = csr_matrix(X_train_t)
+                print("=== sampling applied ===")
+                
             os.makedirs(self.data_transformation_config.transformed_data_dir, exist_ok=True)
 
             save_npz(self.data_transformation_config.transformed_train_x_file_path, X_train_t)
