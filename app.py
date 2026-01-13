@@ -185,7 +185,7 @@ if 'trans_dt' in filtered.columns:
         st.plotly_chart(fig_h, use_container_width=True)
     with col2:
         wd_order = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
-        fig_w = px.histogram(filtered, x='weekday', category_orders={'weekday':wd_order}, color='is_fraud', title='Transactions by Weekday')
+        fig_w = px.histogram(filtered, x='weekday', category_orders={'weekday':wd_order}, color='is_fraud', title='Transactions by Weekday', color_discrete_map={False: 'blue', True: 'red'})
         st.plotly_chart(fig_w, use_container_width=True)
 else:
     st.info("No transaction datetime available.")
