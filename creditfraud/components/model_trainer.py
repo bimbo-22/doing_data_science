@@ -1,3 +1,4 @@
+
 import os
 import sys
 import numpy as np
@@ -60,7 +61,7 @@ class ModelTrainer:
     ):
         self.model_trainer_config = model_trainer_config
         self.data_transformation_artifact = data_transformation_artifact
-
+    
     def tune_threshold(self, y_true, y_proba):
         precision, recall, thresholds = precision_recall_curve(y_true, y_proba)
         f1_scores = (2 * precision * recall) / (precision + recall + 1e-8)
@@ -101,7 +102,7 @@ class ModelTrainer:
             "GradientBoostingClassifier": GradientBoostingClassifier(),
             "AdaBoostClassifier": AdaBoostClassifier(),
             "Xgboost": XGBClassifier(eval_metric="logloss"),
-            "LightGBM": LGBMClassifier(class_weight="balanced", verbose=-1),
+
         }
 
 
@@ -111,11 +112,6 @@ class ModelTrainer:
                 "splitter": ["best", "random"],
                 "max_depth": [1, 2, 3, 4, 5],
                 "max_features": ["auto", "sqrt", "log2"],
-            },
-            "LightGBM": {
-                "num_leaves": [31, 50, 70],
-                "learning_rate": [0.1, 0.01, 0.05],
-                "n_estimators": [100, 200, 500],
             },
             "RandomForestClassifier": {
                 "max_depth": [5, 8, 15, None, 10],
@@ -259,7 +255,7 @@ class ModelTrainer:
                 else X_train[:1000]
             )
             self.log_shap(best_model, X_sample)
-            input_example = X_train[:5].toarray()  # Convert sparse to dense for example
+            input_example = X_train[:5].toarray()  
             predictions = best_model.predict(input_example)
             signature = infer_signature(input_example, predictions)
             mlflow.sklearn.log_model(

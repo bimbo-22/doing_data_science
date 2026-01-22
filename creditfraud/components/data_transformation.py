@@ -70,9 +70,17 @@ class DataTransformation:
     
     def initiate_data_transformation(self):
         try:
-            train_df = self.apply_transformations(
-                self.read_data(self.data_validation_artifact.valid_train_file_path)
+            train_df = self.read_data(self.data_validation_artifact.valid_train_file_path)
+            train_df["trans_date_trans_time"] = pd.to_datetime(
+                train_df["trans_date_trans_time"],
+                format="%d/%m/%Y %H:%M",
+                errors="coerce"
             )
+            logging.info("Applying Cutoff date to training data")
+            cutoff = pd.Timestamp("2020-12-23 00:00:00")  # comment out to either add the cut off or not
+            train_df = train_df[train_df["trans_date_trans_time"] < cutoff].copy()
+            train_df = self.apply_transformations(train_df)
+
             test_df = self.apply_transformations(
                 self.read_data(self.data_validation_artifact.valid_test_file_path)
             )
@@ -85,8 +93,6 @@ class DataTransformation:
 
             cat_cols = X_train.select_dtypes(include="object").columns.tolist()
             num_cols = X_train.select_dtypes(exclude="object").columns.tolist()
-            target_enc_cols = ["merchant", "job"]
-
 
             preprocessor = self.get_preprocessor(
                 target_enc_cols=target_enc_cols,

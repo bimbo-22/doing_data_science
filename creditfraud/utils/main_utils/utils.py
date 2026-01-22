@@ -76,7 +76,7 @@ def evaluate_models(X_train, y_train, X_test, y_test, models, params):
         all_metrics = {}
         for model_name, model in models.items():
             param = params.get(model_name, {})
-            rs = RandomizedSearchCV(model, param, cv=3, n_iter=10)  # Reverted to RandomizedSearchCV
+            rs = RandomizedSearchCV(model, param, cv=3, n_iter=10,n_jobs=-1)  # Reverted to RandomizedSearchCV
             rs.fit(X_train, y_train)
             best_params_all[model_name] = rs.best_params_
             model.set_params(**rs.best_params_)
