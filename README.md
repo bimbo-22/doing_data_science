@@ -33,42 +33,96 @@ We are working with the Credit Card Fraud Prediction dataset (~555k transactions
 
 ## File Structure
 ```bash
-├── .gitignore   #files not to add to github
-├── Dockerfile
-├── README.md   # documentation file    
-├── config      
-    └── config.yaml
-├── creditfaultprediction       # packaged project folder
-    ├── __init__.py
-    ├── components              # contains all required component for the project
-    │   ├── __init__.py
-    │   ├── data_ingestion.py
-    │   ├── data_transformation.py
-    │   ├── data_validation.py
-    │   ├── model_evaluation.py
-    │   └── model_trainer.py
-    ├── config
-    │   ├── __init__.py
-    │   └── configuration.py
-    ├── constants              # contains constant variables
-    │   ├── __init__.py
-    │   └── training_pipeline.py    
-    │   │   └── __init__.py
-    ├── entity
-    │   ├── __init___.py
-    │   └── config_entity.py    
-    ├── pipeline                # all components combined together
-    │   └── __init__.py
-    └── utils
-    │   ├── __init__.py
-    │   └── common.py           # additional functions needed throughout project
+├── app.py
+├── Artifact
+│   ├── 01-06-2026-13-05-51
+│   │   ├── data_ingestion
+│   │   └── data_validation
+│   ├── 01-07-2026-15-43-07
+│   │   ├── data_ingestion
+│   │   ├── data_transformation
+│   │   └── data_validation
+│   ├── 01-14-2026-22-21-09
+│   │   └── model_trainer
+│   └── 01-18-2026-15-26-35
+│       ├── data_ingestion
+│       ├── data_transformation
+│       ├── data_validation
+│       └── model_trainer
+├── config
+│   └── config.yaml
+├── creditfraud
+│   ├── __init__.py
+│   ├── __pycache__
+│   │   └── __init__.cpython-313.pyc
+│   ├── components
+│   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   ├── data_ingestion.py
+│   │   ├── data_transformation.py
+│   │   ├── data_validation.py
+│   │   └── model_trainer.py
+│   ├── config
+│   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   └── configuration.py
+│   ├── constants
+│   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   └── training_pipeline
+│   ├── entity
+│   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   ├── artifact_entity.py
+│   │   └── config_entity.py
+│   ├── exception
+│   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   └── exception.py
+│   ├── logging
+│   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   └── logger.py
+│   ├── pipeline
+│   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   └── training_pipeline.py
+│   └── utils
+│       ├── __init__.py
+│       ├── __pycache__
+│       ├── common.py
+│       ├── main_utils
+│       └── ml_utils
+├── data_schema
+│   └── schema.yaml
+├── documentation
+├── fraud_test.csv
+├── logs
+│   ├── 2026-01-18_15-15-12.log
+│   ├── 2026-01-18_15-19-45.log
+│   ├── 2026-01-18_15-26-07.log
+│   └── 2026-01-18_15-26-35.log
 ├── main.py
+├── mlflow.db
+├── mlruns
+│   ├── 432244404736493076
+│   │   ├── 6b1da735f74d4bc7ae56fb21f340456f
+│   │   ├── 821afafbcbe34c4f840de867e7875dea
+│   │   ├── meta.yaml
+│   │   ├── models
+│   │   └── tags
+│   └── models
+│       └── CreditFraudModel
+├── params.yaml
+├── README.md
 ├── requirements.txt
 ├── research
-    └── data_understanding.ipynb     # all research needed for the project incl. visualizations  
+│   ├── data_understanding.ipynb
+│   ├── label_mappings.json
+│   └── log_regression.ipynb
+├── schema.yaml
 ├── setup.py
-
-
+└── template.py
 ``` 
 
 ## Data Understanding
