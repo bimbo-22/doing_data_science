@@ -165,6 +165,7 @@ all_models:
       precision_score: 0.9527298613141469
       recall_score: 0.9670711376973539
       roc_auc_score: 0.959544724930452
+=============================================
   GradientBoostingClassifier:
     hyperparameters:
       criterion: squared_error
@@ -184,6 +185,7 @@ all_models:
       precision_score: 1.0
       recall_score: 1.0
       roc_auc_score: 1.0
+=============================================
   RandomForestClassifier:
     hyperparameters:
       max_depth: null
@@ -202,6 +204,7 @@ all_models:
       precision_score: 1.0
       recall_score: 0.9995371589318626
       roc_auc_score: 0.9997685794659312
+=============================================
   Xgboost:
     hyperparameters:
       colsample_bytree: 0.3
