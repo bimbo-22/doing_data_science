@@ -146,6 +146,7 @@ Next steps:
 
 
 ### All Model Results
+```bash
 all_models:
   AdaBoostClassifier:
     hyperparameters:
@@ -233,7 +234,7 @@ best_model:
     precision_score: 1.0
     recall_score: 1.0
     roc_auc_score: 1.0
-
+```
 
 
 
