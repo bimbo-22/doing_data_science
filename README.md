@@ -145,3 +145,96 @@ Next steps:
 
 
 
+### All Model Results
+all_models:
+  AdaBoostClassifier:
+    hyperparameters:
+      algorithm: SAMME
+      n_estimators: 80
+    test:
+      accuracy_score: 0.9507125890736342
+      f1_score: 0.9713355671308879
+      precision_score: 0.0628102990416811
+      recall_score: 0.84472049689441
+      roc_auc_score: 0.8979220529657271
+    train:
+      accuracy_score: 0.959544724930452
+      f1_score: 0.959542433135147
+      precision_score: 0.9527298613141469
+      recall_score: 0.9670711376973539
+      roc_auc_score: 0.959544724930452
+  GradientBoostingClassifier:
+    hyperparameters:
+      criterion: squared_error
+      loss: log_loss
+      max_depth: 15
+      min_samples_split: 20
+      n_estimators: 200
+    test:
+      accuracy_score: 0.9984884474195638
+      f1_score: 0.998484923897478
+      precision_score: 0.8072100313479624
+      recall_score: 0.7996894409937888
+      roc_auc_score: 0.8994743991904732
+    train:
+      accuracy_score: 1.0
+      f1_score: 1.0
+      precision_score: 1.0
+      recall_score: 1.0
+      roc_auc_score: 1.0
+  RandomForestClassifier:
+    hyperparameters:
+      max_depth: null
+      max_features: 7
+      min_samples_split: 20
+      n_estimators: 1000
+    test:
+      accuracy_score: 0.9970848628805874
+      f1_score: 0.996209541988139
+      precision_score: 0.99375
+      recall_score: 0.2468944099378882
+      roc_auc_score: 0.6234441942266156
+    train:
+      accuracy_score: 0.9997685794659313
+      f1_score: 0.9997685794535375
+      precision_score: 1.0
+      recall_score: 0.9995371589318626
+      roc_auc_score: 0.9997685794659312
+  Xgboost:
+    hyperparameters:
+      colsample_bytree: 0.3
+      learning_rate: 0.1
+      max_depth: 30
+      n_estimators: 200
+    test:
+      accuracy_score: 0.9989023249118261
+      f1_score: 0.9988252933033672
+      precision_score: 0.9752577319587629
+      recall_score: 0.734472049689441
+      roc_auc_score: 0.8671998959367769
+    train:
+      accuracy_score: 1.0
+      f1_score: 1.0
+      precision_score: 1.0
+      recall_score: 1.0
+      roc_auc_score: 1.0
+best_model:
+  name: Xgboost
+  test:
+    accuracy_score: 0.9988543391156218
+    f1_score: 0.9987669400503724
+    precision_score: 0.9788583509513742
+    recall_score: 0.718944099378882
+    roc_auc_score: 0.8594419422661547
+  threshold: 0.5357704162597656
+  train:
+    accuracy_score: 1.0
+    f1_score: 1.0
+    precision_score: 1.0
+    recall_score: 1.0
+    roc_auc_score: 1.0
+
+
+
+
+
